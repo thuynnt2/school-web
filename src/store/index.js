@@ -1,11 +1,20 @@
-/* eslint-disable no-unused-vars */
-import { configureStore } from "@reduxjs/toolkit";
-// import taiKhoanSlice from "./slice/taiKhoan";
+import { configureStore } from '@reduxjs/toolkit';
+import authReducer from './slice/authSlice';
+import facultyReducer from './slice/facultySlice';
+import courseReducer from './slice/courseSlice';
+import curriculumReducer from './slice/curriculumSlice';
+import newsReducer from './slice/newsSlice';
+import schoolReducer from './slice/schoolSlice';
+import { thunk } from 'redux-thunk';
 
-const store = configureStore({
+export const store = configureStore({
   reducer: {
-    // taiKhoan: taiKhoanSlice.reducer,
+    auth: authReducer.reducer,
+    faculty: facultyReducer.reducer,
+    course: courseReducer.reducer,
+    curriculum: curriculumReducer.reducer,
+    news: newsReducer.reducer,
+    school: schoolReducer.reducer,
   },
+  middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(thunk), 
 });
-
-export default store;

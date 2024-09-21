@@ -8,7 +8,7 @@ const CampusInfoAndNews = () => {
   return (
     <div className="campus-info-and-news">
       <Row gutter={[24, 24]}>
-        <Col xs={24} md={12} style={{height: '437px'}}>
+        <Col xs={24} md={12}>
           <Card className='blue' title="Khuôn viên Đại học Trà Vinh" bordered={false}>
             <Row gutter={[16, 16]}>
               <Col span={8}>
@@ -46,8 +46,8 @@ const CampusInfoAndNews = () => {
             </Row>
           </Card>
         </Col>
-        <Col xs={24} md={12} style={{height: '437px'}} className='news-content'>
-          <Card className='blue' style={{height: '100%'}} title="Tin tức nổi bật trong tuần" bordered={false}>
+        <Col xs={24} md={12} className='news-content'>
+          <Card className='blue' title="Tin tức nổi bật trong tuần" bordered={false}>
             <List
               itemLayout="vertical"
               dataSource={[

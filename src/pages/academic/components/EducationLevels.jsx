@@ -1,31 +1,46 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { Row, Col, Card, Typography, Button } from 'antd'
 import { ReadOutlined, BookOutlined, AuditOutlined } from '@ant-design/icons'
 
 const { Title, Paragraph } = Typography
 
-const EducationLevels = () => {
+const EducationLevels = ({ curriculum, onItemClick }) => {
+  const icons = [<ReadOutlined />, <BookOutlined />, <AuditOutlined />]
+  const colors = ['#52c41a', '#ff9e73', '#722ed1']
+
+  const getIcon = (index) => {
+    return icons[index % 3]
+  }
+
+  const getColor = (index) => {
+    return colors[index % 3]
+  }
+
   return (
     <div className="education-levels-container">
-        <Title level={2} className="blue"  style={{ textAlign: 'center', color: '#1890ff' }}>Các bậc đào tạo</Title>
+      <Title level={2} className="blue" style={{ textAlign: 'center', color: '#1890ff' }}>Chương trình đào tạo</Title>
       <Row gutter={[24, 24]} className="education-levels">
-        {[
-          { icon: <ReadOutlined />, title: 'Cao đẳng', color: '#52c41a', description: 'Chương trình đào tạo 2-3 năm' },
-          { icon: <BookOutlined />, title: 'Đại học', color: '#ff9e73', description: 'Chương trình đào tạo 4-5 năm' },
-          { icon: <AuditOutlined />, title: 'Sau đại học', color: '#722ed1', description: 'Chương trình Thạc sĩ và Tiến sĩ' },
-        ].map((item, index) => (
+        {curriculum.map((item, index) => (
           <Col key={index} xs={24} sm={8}>
             <Card
               hoverable
               className="education-level-card"
-              style={{ borderTop: `4px solid ${item.color}` }}
+              style={{ borderTop: `4px solid ${getColor(index)}` }}
+              onClick={() => onItemClick(item)}
             >
-              <div className="icon-wrapper" style={{ color: item.color }}>
-                {React.cloneElement(item.icon, { style: { fontSize: '48px' } })}
+              <div className="icon-wrapper" style={{ color: getColor(index) }}>
+                {React.cloneElement(getIcon(index), { style: { fontSize: '48px' } })}
               </div>
-              <Title level={4} style={{ color: item.color, marginTop: '16px' }}>{item.title}</Title>
+              <Title level={4} style={{ color: getColor(index), marginTop: '16px' }}>{item.title}</Title>
               <Paragraph>{item.description}</Paragraph>
-              <Button type="primary" style={{ backgroundColor: item.color, borderColor: item.color }}>
+              <Button 
+                type="primary" 
+                style={{ backgroundColor: getColor(index), borderColor: getColor(index) }}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onItemClick(item);
+                }}
+              >
                 Tìm hiểu thêm
               </Button>
             </Card>

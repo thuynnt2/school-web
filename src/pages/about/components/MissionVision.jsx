@@ -28,7 +28,7 @@ const MissionVision = () => {
                         </Button>
                     </Card>
                 </Col>
-                <Col xs={24} md={12} style={{ height: '330px' }}>
+                <Col xs={24} md={12} style={{ height: '330px', overflow: 'hidden' }}>
                     <img
                         src="https://gocsinhvien.tvu.edu.vn/wp-content/uploads/2021/05/banner-15-nam-tvu-3.jpg"
                         alt="Sứ mệnh và Tầm nhìn Đại học Trà Vinh"

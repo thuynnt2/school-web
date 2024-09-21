@@ -1,29 +1,75 @@
-import React from 'react';
-import { Card, Col, Row, Typography, Button } from 'antd';
+import React, { useEffect, useState } from 'react';
+import { Card, Col, Row, Typography, Skeleton } from 'antd';
 import {
   BookOutlined,
   ReadOutlined,
-  AuditOutlined
 } from '@ant-design/icons';
 import { TrainingPrograms } from './components/TrainingPrograms';
 import Faculty from './components/Faculty';
 import './Academic.scss';
 import EducationLevels from './components/EducationLevels';
+import { useDispatch, useSelector } from 'react-redux';
+import { getCurriculum } from '../../store/slice/curriculumSlice';
+import { selectCurriculumData, selectCurriculumLoading, selectCurriculumError } from '../../store/selectors/curriculumSelectors';
+import { getFacultyById } from '../../store/slice/facultySlice';
+import { selectFacultyByIdData, selectFacultyByIdError, selectFacultyByIdLoading } from '../../store/selectors/facultySelectors';
+import { isNull } from 'lodash';
 
 const { Title, Paragraph } = Typography;
-const { Meta } = Card;
 
 const Academic = () => {
+  const dispatch = useDispatch();
+
+  const curriculum = useSelector(selectCurriculumData);
+  const isCurriculumLoading = useSelector(selectCurriculumLoading);
+  const curriculumError = useSelector(selectCurriculumError);
+  const faculty = useSelector(selectFacultyByIdData);
+  const isFacultyLoading = useSelector(selectFacultyByIdLoading);
+  const facultyError = useSelector(selectFacultyByIdError);
+
+  const [facultyByCurriculum, setFacultyByCurriculum] = useState([])
+  const [courseByFaculty, setCourseByFaculty] = useState(null)
+
+  useEffect(() => {
+    dispatch(getCurriculum());
+  }, []);
+
+  useEffect(() => {
+    if (curriculum && curriculum.length > 0) {
+      setFacultyByCurriculum(curriculum[0].faculties || []);
+    }
+  }, [curriculum])
+
+  useEffect(() => {
+    if (facultyByCurriculum && facultyByCurriculum.length > 0) {
+      setCourseByFaculty(facultyByCurriculum[0].id || '');
+    }
+  }, [facultyByCurriculum])
+
+  useEffect(() => {
+    if (!isNull(courseByFaculty)) {
+      dispatch(getFacultyById(courseByFaculty));
+    }
+  }, [courseByFaculty]);
+
+  const handleChangeCurriculum = (item) => {
+    setFacultyByCurriculum(item.faculties || []);
+  };
+
+  const handleChangeFaculty = (item) => {
+    setCourseByFaculty(item.id || '');
+  };
+
   return (
     <div className="academic-container">
       <div className="academic-hero">
-        <div className="academic-hero-overlay"/>
+        <div className="academic-hero-overlay" />
         <h1>Đào tạo tại Đại học Trà Vinh</h1>
         <p>
-          Đại học Trà Vinh cung cấp một môi trường học tập chất lượng cao với các chương trình đào tạo đa dạng và phong phú. 
-          Chúng tôi cam kết mang đến cho sinh viên những kiến thức chuyên sâu và kỹ năng thực tiễn, 
-          giúp họ tự tin bước vào thị trường lao động và phát triển sự nghiệp. 
-          Với đội ngũ giảng viên giàu kinh nghiệm và cơ sở vật chất hiện đại, chúng tôi luôn nỗ lực tạo ra một môi trường học tập 
+          Đại học Trà Vinh cung cấp một môi trường học tập chất lượng cao với các chương trình đào tạo đa dạng và phong phú.
+          Chúng tôi cam kết mang đến cho sinh viên những kiến thức chuyên sâu và kỹ năng thực tiễn,
+          giúp họ tự tin bước vào thị trường lao động và phát triển sự nghiệp.
+          Với đội ngũ giảng viên giàu kinh nghiệm và cơ sở vật chất hiện đại, chúng tôi luôn nỗ lực tạo ra một môi trường học tập
           thân thiện và sáng tạo.
         </p>
       </div>
@@ -59,11 +105,44 @@ const Academic = () => {
         </Col>
       </Row>
 
-      <Faculty />
+      {isCurriculumLoading ? (
+        <Skeleton active paragraph={{ rows: 4 }} />
+      ) : curriculumError ? (
+        <div style={{ textAlign: 'center', margin: '20px 0', color: 'red' }}>
+          Error loading curriculum data: {curriculumError}
+        </div>
+      ) : curriculum && curriculum.length > 0 ? (
+        <>
+          <EducationLevels
+            curriculum={curriculum}
+            onItemClick={handleChangeCurriculum}
+          />
+          <Faculty
+            faculties={facultyByCurriculum}
+            onItemClick={handleChangeFaculty}
+          />
+        </>
+      ) : (
+        <Skeleton active paragraph={{ rows: 4 }} />
+      )
+      }
 
-      <TrainingPrograms />
-
-      <EducationLevels />
+      {isFacultyLoading ? (
+        <Skeleton active paragraph={{ rows: 4 }} />
+      ) : facultyError ? (
+        <div style={{ textAlign: 'center', margin: '20px 0', color: 'red' }}>
+          Error loading curriculum data: {facultyError}
+        </div>
+      ) : faculty && faculty.userData ? (
+        <>
+          <TrainingPrograms
+            courses={faculty.userData.courses}
+          />
+        </>
+      ) : (
+        <Skeleton active paragraph={{ rows: 4 }} />
+      )
+      }
     </div>
   );
 };

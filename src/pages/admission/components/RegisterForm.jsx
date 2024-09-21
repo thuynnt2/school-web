@@ -1,13 +1,23 @@
-import { Card, Col, Row, Form, Input, DatePicker, Button, Typography } from 'antd'
+import { Card, Col, Row, Form, Input, DatePicker, Button, Typography, message } from 'antd'
 import React from 'react'
+import { admissionRegister } from '../../../store/slice/authSlice';
+import { useDispatch } from 'react-redux';
 
 const { Title } = Typography;
+
 const RegisterForm = () => {
+    const dispatch = useDispatch();
     const [form] = Form.useForm()
 
-    const onFinish = (values) => {
+    const onFinish = async (values) => {
         console.log('Form values:', values)
-        // Handle form submission here
+        try {
+            await dispatch(admissionRegister(values));
+            message.success('Đăng ký thành công!');
+            form.resetFields();
+        } catch (error) {
+            message.error('Đăng ký không thành công!');
+        }
     }
 
     return (

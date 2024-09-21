@@ -9,7 +9,7 @@ const Achievements = () => {
 
         <div className="outstanding-achievements content-wrapper">
             <Row gutter={[24, 24]} align="middle">
-                <Col xs={24} md={12} style={{height: '390px'}}>
+                <Col xs={24} md={12} style={{height: '390px', overflow: 'hidden'}}>
                     <Carousel autoplay>
                         <div>
                             <img

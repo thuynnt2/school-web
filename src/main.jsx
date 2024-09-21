@@ -4,6 +4,8 @@ import {
   createBrowserRouter,
   RouterProvider,
 } from "react-router-dom";
+import { Provider } from 'react-redux';
+import { store } from './store';
 import "./index.scss";
 import ErrorPage from "./pages/common/error/ErrorPage";
 import News from "./pages/news/News";
@@ -13,6 +15,7 @@ import Academic from "./pages/academic/Academic";
 import Admission from "./pages/admission/Admission";
 import Auth from "./pages/auth/Auth";
 import Course from "./pages/courses/Course";
+import ProtectedRoute from "./components/ProtectedRoute";
 
 const router = createBrowserRouter([
   {
@@ -27,14 +30,30 @@ const router = createBrowserRouter([
       { path: "/admission", element: <Admission /> },
       { path: "/login", element: <Auth activeTab="login" /> },
       { path: "/register", element: <Auth activeTab="register" /> },
-      { path: "/course-registration", element: <Course activeTab="course-registration" /> },
-      { path: "/my-courses", element: <Course activeTab="my-courses" /> },
+      {
+        path: "/course-registration",
+        element: (
+          <ProtectedRoute>
+            <Course activeTab="course-registration" />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: "/my-courses",
+        element: (
+          <ProtectedRoute>
+            <Course activeTab="my-courses" />
+          </ProtectedRoute>
+        ),
+      },
     ],
   },
 ]);
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
-    <RouterProvider router={router} />
+    <Provider store={store}>
+      <RouterProvider router={router} />
+    </Provider>
   </React.StrictMode>
 );
